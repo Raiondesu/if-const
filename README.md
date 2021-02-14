@@ -14,7 +14,39 @@ or in any other way you like.
 
 ## Usage
 
-Works with any type of conditional that a normal `if` works with.\
+Imangine you have a faulty third-party function that can return a falsy value in some cases.\
+It's often needed to just get the "truthy" value from that function, quickly do something with it, and forget about it:
+
+```ts
+// returns either null or an object of some sort
+import { nullOrObj } from './some-module';
+
+if (nullOrObj()) {
+  // how do we access the result?
+}
+
+// one might want to do this, but it's illegal in js
+if (const obj = nullOrObj()) {
+  obj
+}
+
+// And this is just tiring
+// What if we want to enforce its immutability?
+let obj;
+if (obj = nullOrObj()) {}
+```
+
+That's where `if-const` comes in:
+
+```ts
+ifConst(nullOrObj(), obj => {
+  // use the obj as you wish
+});
+```
+
+It's that simple!
+
+It works with any type of conditional that a normal `if` works with.\
 Allows to use the result of a conditional in a code block (similar to C# `out var` syntax).
 
 ```ts
@@ -88,6 +120,43 @@ const ifObj = constIf(truthyObj => {
 const obj = ifObj(nullOrObj);
 ```
 This can be useful for piping and mapping different values in other functions.
+
+### Comparator
+
+If, for some reason, you need to check for some different condition (not falsyness), you can use the `.not` and `.compare` methods:
+
+```ts
+// For example, we need to check if the value is 0 or null
+const value = Math.random() > 0.5 ? null : 0;
+
+// Since 0 is falsy, we need a custom comparator for this
+
+// .not accepts a single value to `!==` against
+// Note that the logic here is negated!
+const ifNotNull = ifConst.not(null);
+
+// .compare accepts a complete comparator function
+const ifNotNull = ifConst.compare<null>(_ => _ !== null);
+
+ifNotNull(value, v => {
+  console.log('true', v, typeof v)
+}, n => {
+  console.log('false', n, typeof n)
+});
+// logs either
+// > true 0 number
+// or
+// > false null object
+
+
+// Or a shorter version:
+ifConst.not(null)(value, v => {
+  console.log('true', v, typeof v)
+}, n => {
+  console.log('false', n, typeof n)
+});
+```
+Which reads almost like plain english!
 
 ## About
 

@@ -1,18 +1,18 @@
-import { ifConst, ELF, F, constIf } from '../src';
+import { ifConst, constIf } from '../src';
 
-const FALSE: boolean = false;
-const TRUE: boolean = true;
+const FALSE_RES = '';
+const TRUE_RES = 'true';
 const RETURN: string = 'result';
 const cases = [
-  [TRUE, true],
-  [FALSE, true],
-  [TRUE, false],
-  [FALSE, false],
+  [TRUE_RES, true],
+  [FALSE_RES, true],
+  [TRUE_RES, false],
+  [FALSE_RES, false],
 ] as const;
 
-const callback = (initCond: boolean, ret: boolean) => (cond: boolean) => r => {
+const callback = (initCond: string, ret: boolean, comp: (v: any) => boolean) => (cond: boolean) => (r: string) => {
   expect(r).toBe(initCond);
-  expect(r).toBe(cond);
+  expect(comp(r)).toBe(cond);
 
   if (ret) {
     return RETURN;
@@ -21,7 +21,7 @@ const callback = (initCond: boolean, ret: boolean) => (cond: boolean) => r => {
   return r;
 };
 
-const testRes = (cond: any, res: any, ret: boolean, part: boolean) => {
+const testRes = (cond: string, res: any, ret: boolean, part: boolean, comp: (v: any) => boolean) => {
   if (!part) {
     expect(res).toBe(ret ? RETURN : cond);
 
@@ -29,51 +29,62 @@ const testRes = (cond: any, res: any, ret: boolean, part: boolean) => {
   }
 
   if (!ret) {
-    expect(res).toBe(cond || undefined);
+    expect(res).toBe(comp(false) === true ? cond : (cond || undefined));
 
     return;
   }
 
-  if (cond) {
+  if (cond || comp(false) === true) {
     expect(res).toBe(RETURN);
-  } else {
+  } else if (comp(false) === false) {
     expect(res).toBeUndefined();
   }
 };
 
 const test = (
-  f: (f: F<boolean, boolean | string | undefined>, elf?: ELF<boolean, boolean | string | undefined>) => boolean | string | undefined,
-  cond: boolean,
-  ret: boolean
+  f: (f, elf?) => any,
+  cond: string,
+  ret: boolean,
+  comp: (v: any) => boolean = _ => !!_
 ) => {
-  const cb = callback(cond, ret);
+  const cb = callback(cond, ret, comp);
 
-  testRes(cond, f(cb(true), cb(false)), ret, false);
-  testRes(cond, f(cb(true)), ret, true);
+  testRes(cond, f(cb(true), cb(false)), ret, false, comp);
+  testRes(cond, f(cb(true)), ret, true, comp);
 };
 
-const testConstIf = (
-  f: (f: F<boolean, boolean | string | undefined>, elf?: ELF<boolean, boolean | string | undefined>) => (cond: boolean) => boolean | string | undefined,
-  cond: boolean,
+const testConstIf =  (
+  f: (f, elf?) => any,
+  cond: string,
   ret: boolean
 ) => {
-  const cb = callback(cond, ret);
+  const cb = callback(cond, ret, _ => !!_);
 
-  testRes(cond, f(cb(true), cb(false))(cond), ret, false);
-  testRes(cond, f(cb(true))(cond), ret, true);
+  testRes(cond, f(cb(true), cb(false))(cond), ret, false, _ => !!_);
+  testRes(cond, f(cb(true))(cond), ret, true, _ => !!_);
 };
 
 describe('ifConst', () => {
   it('returns a proper conditioning function when one param is passed', () => {
-    const f = ifConst(TRUE);
+    const f = ifConst(TRUE_RES);
 
     expect(typeof f).toBe('function');
-    expect(f.length).toBe(2);
   });
 
   it('executes correct blocks depending on condition', () => {
     for (const [cond, ret] of cases) {
       test(ifConst(cond), cond, ret);
+    }
+  });
+
+  it('can use comparators', () => {
+    const comp = () => true;
+    for (const [cond, ret] of cases) {
+      test(ifConst.compare(comp)(cond), cond, ret, comp);
+    }
+
+    for (const [cond, ret] of cases) {
+      test(ifConst.not(false)(cond), cond, ret, comp);
     }
   });
 });

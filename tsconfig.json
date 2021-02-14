@@ -11,6 +11,8 @@
     "strict": true,
     "removeComments": true,
     "esModuleInterop": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "alwaysStrict": true,
