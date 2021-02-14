@@ -1,6 +1,6 @@
 {
   "name": "if-const",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "sideEffects": false,
   "description": "Executes blocks of code depending on thruthness of the value, while also making the value accessible to the block",
   "main": "dist/js",
