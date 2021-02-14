@@ -3,6 +3,13 @@ import { ifConst, ELF, F, constIf } from '../src';
 const FALSE: boolean = false;
 const TRUE: boolean = true;
 const RETURN: string = 'result';
+const cases = [
+  [TRUE, true],
+  [FALSE, true],
+  [TRUE, false],
+  [FALSE, false],
+] as const;
+
 const callback = (initCond: boolean, ret: boolean) => (cond: boolean) => r => {
   expect(r).toBe(initCond);
   expect(r).toBe(cond);
@@ -65,14 +72,7 @@ describe('ifConst', () => {
   });
 
   it('executes correct blocks depending on condition', () => {
-    const params = [
-      [TRUE, true],
-      [FALSE, true],
-      [TRUE, false],
-      [FALSE, false],
-    ] as const;
-
-    for (const [cond, ret] of params) {
+    for (const [cond, ret] of cases) {
       test(ifConst(cond), cond, ret);
     }
   });
@@ -80,14 +80,7 @@ describe('ifConst', () => {
 
 describe('constIf', () => {
   it('is the same as ifConst, but in reverse', () => {
-    const params = [
-      [TRUE, true],
-      [FALSE, true],
-      [TRUE, false],
-      [FALSE, false],
-    ] as const;
-
-    for (const [cond, ret] of params) {
+    for (const [cond, ret] of cases) {
       testConstIf(constIf, cond, ret);
     }
   });
