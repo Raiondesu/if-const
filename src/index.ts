@@ -21,3 +21,7 @@ export function ifConst<T, R = never>(cond: T, ...args: FP<T, R>): T | R | undef
 }
 
 export default ifConst;
+
+export function constIf<T, R>(f: F<T, R>, elf: ELF<T, R>): (cond: T) => R {
+  return cond => ifConst(cond, f, elf);
+}
