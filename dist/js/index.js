@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ifConst = void 0;
+exports.constIf = exports.ifConst = void 0;
 function ifConst(cond, ...args) {
     var _a;
     return args[0]
@@ -8,4 +8,8 @@ function ifConst(cond, ...args) {
 }
 exports.ifConst = ifConst;
 exports.default = ifConst;
+function constIf(f, elf) {
+    return cond => ifConst(cond, f, elf);
+}
+exports.constIf = constIf;
 //# sourceMappingURL=index.js.map

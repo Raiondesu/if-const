@@ -4,4 +4,7 @@ export function ifConst(cond, ...args) {
         : (f, elf) => ifConst(cond, f, elf);
 }
 export default ifConst;
+export function constIf(f, elf) {
+    return cond => ifConst(cond, f, elf);
+}
 //# sourceMappingURL=index.js.map
