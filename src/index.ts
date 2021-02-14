@@ -17,7 +17,7 @@ export function ifConst<T, R>(cond: T, f?: F<T, R>, elf?: ELF<T, R>): R | undefi
 export function ifConst<T, R = never>(cond: T, ...args: FP<T, R>): R | undefined | FT<T, R> {
   return args[0]
     ? (cond ? args[0] : args[1])?.(cond as any)
-    : (f, elf) => ifConst<T, R>(cond, f, elf);
+    : (f, elf) => ifConst(cond, f, elf);
 }
 
 export default ifConst;
