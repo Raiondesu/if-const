@@ -1,4 +1,4 @@
-import { ifConst, ELF, F } from '../src';
+import { ifConst, ELF, F, constIf } from '../src';
 
 const FALSE: boolean = false;
 const TRUE: boolean = true;
@@ -45,6 +45,17 @@ const test = (
   testRes(cond, f(cb(true)), ret, true);
 };
 
+const testConstIf = (
+  f: (f: F<boolean, boolean | string | undefined>, elf?: ELF<boolean, boolean | string | undefined>) => (cond: boolean) => boolean | string | undefined,
+  cond: boolean,
+  ret: boolean
+) => {
+  const cb = callback(cond, ret);
+
+  testRes(cond, f(cb(true), cb(false))(cond), ret, false);
+  testRes(cond, f(cb(true))(cond), ret, true);
+};
+
 describe('ifConst', () => {
   it('returns a proper conditioning function when one param is passed', () => {
     const f = ifConst(TRUE);
@@ -63,6 +74,21 @@ describe('ifConst', () => {
 
     for (const [cond, ret] of params) {
       test(ifConst(cond), cond, ret);
+    }
+  });
+});
+
+describe('constIf', () => {
+  it('is the same as ifConst, but in reverse', () => {
+    const params = [
+      [TRUE, true],
+      [FALSE, true],
+      [TRUE, false],
+      [FALSE, false],
+    ] as const;
+
+    for (const [cond, ret] of params) {
+      testConstIf(constIf, cond, ret);
     }
   });
 });
