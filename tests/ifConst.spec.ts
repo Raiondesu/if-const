@@ -1,5 +1,4 @@
-import { ifConst } from '../dist/js';
-import { FP } from '../src';
+import { ifConst, ELF, F } from '../src';
 
 const FALSE: boolean = false;
 const TRUE: boolean = true;
@@ -36,7 +35,7 @@ const testRes = (cond: any, res: any, ret: boolean, part: boolean) => {
 };
 
 const test = (
-  f: (...args: FP<boolean, string | boolean | undefined>) => boolean | string | undefined,
+  f: (f: F<boolean, boolean | string | undefined>, elf?: ELF<boolean, boolean | string | undefined>) => boolean | string | undefined,
   cond: boolean,
   ret: boolean
 ) => {

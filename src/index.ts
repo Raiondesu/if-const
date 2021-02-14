@@ -1,9 +1,9 @@
 export type Falsy = null | undefined | false | 0 | '';
 
-type F<T, R> = (res: Exclude<T, Falsy>) => R;
-type ELF<T, R> = (res: Extract<T, Falsy>) => R;
+export type F<T, R> = (res: Exclude<T, Falsy>) => R;
+export type ELF<T, R> = (res: Extract<T, Falsy>) => R;
 
-export type FP<T, R> = [f?: F<T, R>, elf?: ELF<T, R>];
+type FP<T, R> = [f?: F<T, R>, elf?: ELF<T, R>];
 
 type FT<T, R> = (...args: FP<T, R>) => T | R;
 

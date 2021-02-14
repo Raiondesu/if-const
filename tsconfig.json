@@ -18,10 +18,7 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noImplicitAny": false,
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext"],
     "types": [
       "@types/jest",
       "@types/node"
