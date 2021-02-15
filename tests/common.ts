@@ -33,3 +33,10 @@ export const testRes = (value: string, result: any, returns: boolean, partial: b
     expect(result).toBeUndefined();
   }
 };
+
+export type TestFunc = (
+  f: (f, elf?) => any,
+  value: string,
+  ret: boolean,
+  comp?: (v: any) => boolean
+) => void;
