@@ -1,7 +1,7 @@
-import { ifConst, CompThis, Comparator, defaultComp, F, ELF, Falsy } from './if-const';
+import { CompThis, Comparator, defaultComp, F, ELF, Falsy, _ifConst } from './if-const';
 
 function _constIf<T, R>(this: CompThis, f: F<T, R>, elf?: ELF<T, R>) {
-  return (value: T) => ifConst.call(this, value, f as any, elf as any) as R | undefined;
+  return (value: T) => _ifConst.call(this, value, f as any, elf as any) as R | undefined;
 }
 
 type ConstIf<U> = {
