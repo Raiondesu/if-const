@@ -77,7 +77,7 @@ export type CompThis = { check: Comparator };
 
 export const defaultComp: Comparator = (val: any) => !!val;
 
-export function _ifConst<T, R>(this: CompThis, cond: T, ...args: FP<T, R>): FT<T, R> | R | undefined {
+function _ifConst<T, R>(this: CompThis, cond: T, ...args: FP<T, R>): FT<T, R> | R | undefined {
   return args[0]
     ? (this.check(cond) ? args[0] : args[1])?.(cond as any)
     : _ifConst.bind(this, cond as unknown) as FT<T, R>;
